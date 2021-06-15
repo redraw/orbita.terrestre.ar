@@ -1,0 +1,108 @@
+<template>
+  <main>
+    <l-map
+      ref="map"
+      :center="center"
+      :zoom="zoom"
+      :options="options"
+      @ready="onMapReady"
+    >
+      <l-tile-layer
+        :url="tileLayerUrl"
+        subdomains="abcd"
+        :options="{ ext: 'png' }"
+      />
+      <l-control-zoom position="bottomright" />
+      <l-control position="bottomleft">
+        <small style="z-index: 999">
+          {{ mouse }}
+        </small>
+      </l-control>
+      <Menu v-if="map"/>
+      <Satellite v-if="tle.length" :tle="tle" />
+    </l-map>
+  </main>
+</template>
+
+<script>
+import { mapState } from "vuex"
+import Satellite from "@/components/tracker/Satellite"
+import Menu from "@/components/Menu"
+
+import {
+  LMap,
+  LControl,
+  LTileLayer,
+  LControlZoom,
+} from "vue2-leaflet";
+
+export default {
+  components: {
+    LMap,
+    LControl,
+    LTileLayer,
+    LControlZoom,
+    Satellite,
+    Menu
+  },
+
+  data: () => ({
+    tileLayerUrl:
+      "https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}",
+    zoom: 2.5,
+    center: { lat: 0, lng: 0 },
+    options: {
+      zoomControl: false,
+      minZoom: 2,
+      maxBounds: [
+        [-90, -200],
+        [90, 200],
+      ],
+      maxBoundsViscosity: 0.5,
+    },
+    mouse: {
+      lat: 0,
+      lng: 0
+    }
+  }),
+
+  computed: {
+    ...mapState([
+      "tle",
+      "map",
+      "config",
+    ])
+  },
+
+  methods: {
+    async onMapReady() {
+      const self = this
+      const map = this.$refs.map.mapObject
+      this.$store.dispatch("mapReady", map)
+      map.on("mousemove", function (e) {
+        const {lat, lng} = e.latlng
+        self.mouse = {
+          lat: lat.toFixed(2), 
+          lng: lng.toFixed(2)
+        }
+      })
+      map.on("dragstart", function() {
+        self.$store.commit("setFollow", false)
+      })
+    },
+  }
+};
+</script>
+
+<style scoped>
+main {
+  width: 100%;
+  height: 100%;
+}
+</style>
+
+<style>
+.leaflet-container {
+  font-family: monospace !important;
+}
+</style>

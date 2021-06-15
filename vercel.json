@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "headers": [
+    {
+      "source": "/api/proxy(.*)",
+      "headers": [
+        {
+          "key": "cache-control",
+          "value": "s-maxage=28800"
+        }
+      ]
+    }
+  ]
+}
