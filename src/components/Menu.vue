@@ -11,7 +11,6 @@
             v-model="tle"
             cache-items
             hide-details
-            return-object
             solo-inverted
             auto-select-first
             persistent-hint
@@ -129,7 +128,7 @@ export default {
       if (this.search?.length > 2 && this.$refs.satellites.filteredItems == 0) {
         this.$store.dispatch("fetchTLEs", { NAME: this.search });
       }
-    }, 1000)
+    }, 500)
   },
 };
 </script>
