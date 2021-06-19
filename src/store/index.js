@@ -17,6 +17,8 @@ export default new Vuex.Store({
       terminator: true,
       follow: true,
       telemetry: true,
+      refreshDelaySec: 1,
+      followDelaySec: 30,
       tles: {
         group: "stations",
       },

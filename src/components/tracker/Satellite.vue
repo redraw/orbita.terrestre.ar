@@ -15,7 +15,7 @@
       :lat-lngs="groundTracks[1].slice(0, -5)"
       :weight="2"
     />
-    <TelemetryPanel v-if="config.telemetry" :data="telemetry" />
+    <TelemetryPanel v-if="showTelemetry" :tle="tle" :telemetry="telemetry" />
   </div>
 </template>
 
@@ -31,6 +31,13 @@ import { getGroundTracks, getSatelliteInfo } from "tle.js";
 const R = 6371000; // Earth radius (meters)
 
 export default {
+  props: {
+    tle: {
+      type: Array,
+      required: true
+    }
+  },
+
   components: {
     LPolyline,
     LMarker,
@@ -52,17 +59,19 @@ export default {
       // https://en.wikipedia.org/wiki/Horizon#Other_measures
       return R * Math.acos(R / (R + this.telemetry.height * 1000));
     },
+    showTelemetry() {
+      return this.config.telemetry && this.telemetry.lat && this.telemetry.lng
+    },
     ...mapState([
-      "tle",
       "map",
       "config",
     ])
   },
 
-  async mounted() {
-    await this.setup();
-    setInterval(this.refresh, 1000);
-    setInterval(this.follow, 30 * 1000);
+  mounted() {
+    this.setup();
+    setInterval(this.refresh, this.config.refreshDelaySec * 1000);
+    setInterval(this.follow, this.config.followDelaySec * 1000);
   },
 
   destroyed() {

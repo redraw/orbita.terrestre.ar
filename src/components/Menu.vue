@@ -103,7 +103,11 @@ export default {
         return {text: getSatelliteName(tle), value: tle}
       })
     },
-    ...mapState(["loading", "config", "tles"]),
+    ...mapState([
+      "loading", 
+      "config", 
+      "tles"
+    ]),
   },
 
   data() {
