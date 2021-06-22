@@ -7,7 +7,7 @@
       <l-icon
         :icon-size="[32, 37]"
         :icon-anchor="[15, 25]"
-        icon-url="/satellite.png"
+        icon-url="/satellite-white.png"
       />
     </l-marker>
     <l-polyline
@@ -15,7 +15,7 @@
       :lat-lngs="groundTracks[1].slice(0, -5)"
       :weight="2"
     />
-    <TelemetryPanel v-if="showTelemetry" :tle="tle" :telemetry="telemetry" />
+    <TelemetryPanel v-if="showTelemetry" :telemetry="telemetry" />
   </div>
 </template>
 

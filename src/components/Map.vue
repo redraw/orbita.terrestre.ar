@@ -13,12 +13,15 @@
         :options="{ ext: 'png' }"
       />
       <l-control-zoom position="bottomright" />
-      <l-control position="bottomleft">
+      <l-control class="pa-4" position="leftup">
+        <SearchMenu v-if="map"/>
+      </l-control>
+      <l-control class="pa-4" position="bottomleft">
         <small style="z-index: 999">
           {{ mouse }}
         </small>
+        <TimeTravel />
       </l-control>
-      <Menu v-if="map"/>
       <Satellite v-if="tle.length" :tle="tle" />
     </l-map>
   </main>
@@ -27,7 +30,8 @@
 <script>
 import { mapState } from "vuex"
 import Satellite from "@/components/tracker/Satellite"
-import Menu from "@/components/Menu"
+import TimeTravel from "@/components/ui/TimeTravel"
+import SearchMenu from "@/components/ui/SearchMenu"
 
 import {
   LMap,
@@ -43,12 +47,14 @@ export default {
     LTileLayer,
     LControlZoom,
     Satellite,
-    Menu
+    SearchMenu,
+    TimeTravel,
   },
 
   data: () => ({
-    tileLayerUrl:
-      "https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}",
+    tileLayerUrl: "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
+    // tileLayerUrl: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+    // tileLayerUrl: "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png",
     zoom: 2.5,
     center: { lat: 0, lng: 0 },
     options: {

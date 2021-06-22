@@ -13,6 +13,7 @@ export default new Vuex.Store({
     loading: false,
     tles: [],
     tle: [],
+    timestamp: null,
     config: {
       terminator: true,
       follow: true,
@@ -70,6 +71,10 @@ export default new Vuex.Store({
 
     setTelemetry(state, value) {
       state.config.telemetry = value
+    },
+
+    setTimestamp(state, value) {
+      state.timestamp = value
     }
   },
 
