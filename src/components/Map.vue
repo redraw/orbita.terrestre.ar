@@ -9,6 +9,7 @@
     >
       <l-tile-layer
         :url="tileLayerUrl"
+        :attribution="attribution"
         subdomains="abcd"
         :options="{ ext: 'png' }"
       />
@@ -16,10 +17,12 @@
       <l-control class="pa-4" position="leftup">
         <SearchMenu v-if="map"/>
       </l-control>
-      <l-control class="pa-4" position="bottomleft">
-        <small style="z-index: 999">
-          {{ mouse }}
-        </small>
+      <l-control class="pa-4 ma-0" position="bottomleft">
+        <CoordinatesText 
+          class="d-none d-sm-flex my-1 grey--text" 
+          style="z-index: 999" 
+          :coords="mouse"
+        />
         <TimeTravel />
       </l-control>
       <Satellite v-if="tle.length" :tle="tle" />
@@ -29,9 +32,8 @@
 
 <script>
 import { mapState } from "vuex"
+import { SearchMenu, TimeTravel, CoordinatesText } from "@/components/ui"
 import Satellite from "@/components/tracker/Satellite"
-import TimeTravel from "@/components/ui/TimeTravel"
-import SearchMenu from "@/components/ui/SearchMenu"
 
 import {
   LMap,
@@ -49,6 +51,7 @@ export default {
     Satellite,
     SearchMenu,
     TimeTravel,
+    CoordinatesText
   },
 
   data: () => ({
@@ -56,6 +59,7 @@ export default {
     // tileLayerUrl: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
     // tileLayerUrl: "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png",
     tileLayerUrl: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    attribution: "<a href='https://github.com/redraw/groundtrack' target='_blank'>Github</a>",
     zoom: 2.5,
     center: { lat: 0, lng: 0 },
     options: {

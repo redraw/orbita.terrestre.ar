@@ -58,7 +58,7 @@
       <v-tooltip right>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            class="my-1"
+            class="d-none d-sm-flex my-1"
             fab
             x-small
             v-bind="attrs"

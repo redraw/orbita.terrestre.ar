@@ -50,6 +50,10 @@ export default {
       groundTracks: [],
       telemetry: {},
       fovCircle: null,
+      ticker: {
+        refresh: null,
+        follow: null
+      }
     }
   },
 
@@ -65,13 +69,14 @@ export default {
     ...mapState([
       "map",
       "config",
+      "timestamp",
     ])
   },
 
   mounted() {
     this.setup();
-    setInterval(this.refresh, this.config.refreshDelaySec * 1000);
-    setInterval(this.follow, this.config.followDelaySec * 1000);
+    this.ticker.refresh = setInterval(this.refresh, this.config.refreshDelaySec * 1000);
+    this.ticker.follow = setInterval(this.follow, this.config.followDelaySec * 1000);
   },
 
   destroyed() {
@@ -82,7 +87,7 @@ export default {
 
   methods: {
     setup() {
-      this.telemetry = getSatelliteInfo([...this.tle]);
+      this.telemetry = getSatelliteInfo([...this.tle], this.timestamp);
       const { lat, lng } = this.telemetry;
 
       // remove FoV circle
@@ -102,7 +107,7 @@ export default {
 
     refresh() {
       // get telemetry
-      this.telemetry = getSatelliteInfo([...this.tle]);
+      this.telemetry = getSatelliteInfo([...this.tle], this.timestamp);
       const { lat, lng } = this.telemetry;
 
       // set FoV circle
@@ -110,21 +115,36 @@ export default {
       this.fovCircle.setRadius(this.fovRadius);
     },
 
+    async updateGroundTracks() {
+      this.groundTracks = await getGroundTracks({
+        tle: [...this.tle],
+        isLngLatFormat: false,
+        startTimeMS: this.timestamp
+      });
+    },
+
     async follow() {
+      await this.updateGroundTracks()
       if (this.config.follow) {
         const { lat, lng } = this.telemetry
         this.map.setView([lat, lng])
       }
-      this.groundTracks = await getGroundTracks({
-        tle: [...this.tle],
-        isLngLatFormat: false,
-      });
     },
   },
 
   watch: {
     tle() {
+      // if sat change, setup
       this.setup()
+    },
+    timestamp(a, b) {
+      // if difference is greater than 5s
+      // we consider time travel
+      if (Math.abs(a - b) > 5000) {
+        this.refresh()
+        this.$store.commit('setFollow', true)
+        this.follow()
+      }
     },
     "config.follow": {
       handler() {
