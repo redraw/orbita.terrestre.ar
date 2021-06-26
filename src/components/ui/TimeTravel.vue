@@ -74,7 +74,7 @@
       </v-time-picker>
     </v-dialog>
     <!-- back -->
-    <v-icon v-if="shiftMs > 0" class="mr-2" small @click="shiftMs = 0">
+    <v-icon v-if="Math.abs(shiftMs) > 0" class="mr-2" small @click="shiftMs = 0">
       mdi-backup-restore
     </v-icon>
   </div>
