@@ -74,14 +74,48 @@
       </v-time-picker>
     </v-dialog>
     <!-- back -->
-    <v-icon v-if="Math.abs(shiftMs) > 0" class="mr-2" small @click="shiftMs = 0">
-      mdi-backup-restore
-    </v-icon>
+    <v-tooltip top v-if="Math.abs(shiftMs) > 0">
+      <template v-slot:activator="{ on, attrs }">
+        <v-icon 
+          class="mx-2" 
+          small 
+          v-bind="attrs"
+          v-on="on"
+          @click="shiftMs = 0"
+        >
+          mdi-backup-restore
+        </v-icon>
+      </template>
+      <span>
+        Now
+      </span>
+    </v-tooltip>
+    <!-- days from epoch warning -->
+    <v-tooltip top v-if="daysFromEpoch > 14">
+      <template v-slot:activator="{ on, attrs }">
+        <v-icon 
+          class="mx-2"
+          color="yellow" 
+          small
+          v-bind="attrs"
+          v-on="on"
+        >
+          mdi-alert
+        </v-icon>
+      </template>
+      <span>
+        TLE epoch is {{ daysFromEpoch }} days from current datetime<br>
+        Prediction might be inaccurate
+      </span>
+    </v-tooltip>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex"
 import { toISOString } from "@/utils/date"
+
+import { getEpochTimestamp } from "tle.js";
 
 export default {
   data() {
@@ -110,6 +144,18 @@ export default {
 
   destroyed() {
     clearTimeout(this.ticker)
+  },
+
+  computed: {
+    daysFromEpoch() {
+      const diff = Math.abs(getEpochTimestamp([...this.tle]) - this.clock.getTime())
+      const days = Math.ceil(diff / 1000 / 60 / 60 / 24)
+      return days
+    },
+    ...mapState([
+      "tle",
+      "loading",
+    ])
   },
 
   methods: {
