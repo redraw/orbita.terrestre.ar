@@ -112,18 +112,25 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
 import { toISOString } from "@/utils/date"
 
 import { getEpochTimestamp } from "tle.js";
 
 export default {
+  props: {
+    tle: {
+      type: Array,
+      required: true
+    }
+  },
+  
   data() {
     return {
       paused: false,
       date: null,
       time: null,
       clock: new Date(),
+      tleEpoch: new Date(),
       shiftMs: 0,
       relative: {
         date: null,
@@ -134,7 +141,7 @@ export default {
         time: false
       },
       speed: 1,
-      ticker: null
+      ticker: null,
     }
   },
 
@@ -148,14 +155,10 @@ export default {
 
   computed: {
     daysFromEpoch() {
-      const diff = Math.abs(getEpochTimestamp([...this.tle]) - this.clock.getTime())
+      const diff = Math.abs(this.clock.getTime() - this.tleEpoch)
       const days = Math.ceil(diff / 1000 / 60 / 60 / 24)
       return days
-    },
-    ...mapState([
-      "tle",
-      "loading",
-    ])
+    }
   },
 
   methods: {
@@ -199,6 +202,10 @@ export default {
     shiftMs() {
       clearTimeout(this.ticker)
       this.tick()
+    },
+
+    tle() {
+      this.tleEpoch = getEpochTimestamp([...this.tle])
     },
 
     dialogs: {

@@ -23,7 +23,7 @@
           style="z-index: 999" 
           :coords="mouse"
         />
-        <TimeTravel v-if="tle.length"/>
+        <TimeTravel v-if="tle.length" :tle="tle"/>
       </l-control>
       <Satellite v-if="tle.length" :tle="tle" />
     </l-map>
