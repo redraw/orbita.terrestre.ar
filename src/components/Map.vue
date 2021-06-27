@@ -23,7 +23,7 @@
           style="z-index: 999" 
           :coords="mouse"
         />
-        <TimeTravel />
+        <TimeTravel v-if="tle.length"/>
       </l-control>
       <Satellite v-if="tle.length" :tle="tle" />
     </l-map>
@@ -115,5 +115,8 @@ main {
 <style>
 .leaflet-container {
   font-family: monospace !important;
+}
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.3) !important
 }
 </style>
