@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import api from "@/api"
+import events from "@/eventbus"
 import SolarTerminator from "@joergdietrich/leaflet.terminator"
 
 Vue.use(Vuex)
@@ -48,7 +49,14 @@ export default new Vuex.Store({
     },
 
     setupTerminator(state) {
-      state.terminator = SolarTerminator()
+      state.terminator = SolarTerminator({
+        stroke: true,
+        color: "#ffffff",
+        dashArray: "5 10",
+        weight: 1,
+        opacity: 0.4,
+        fillOpacity: 0.4
+      })
       state.terminator.addTo(state.map)
     },
 
@@ -91,6 +99,13 @@ export default new Vuex.Store({
       commit("setupTerminator")
       await dispatch("fetchTLEs", { GROUP: state.config.tles.group })
       commit("updateSat", state.tles[0])
+    },
+
+    timeTravel({ commit }, start) {
+      console.log("> traveling to", start)
+      commit("setTimestamp", start.getTime())
+      commit("setFollow", true)
+      events.emit("timeTravel", start)
     }
   },
 

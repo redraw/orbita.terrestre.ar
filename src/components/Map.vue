@@ -113,6 +113,9 @@ main {
 </style>
 
 <style>
+.vue2leaflet-map {
+  position: fixed !important;
+}
 .leaflet-container {
   font-family: monospace !important;
 }

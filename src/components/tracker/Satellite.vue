@@ -21,6 +21,7 @@
 
 <script>
 import { mapState } from "vuex"
+import events from "@/eventbus"
 
 import TelemetryPanel from "@/components/tracker/TelemetryPanel"
 import { LPolyline, LIcon, LMarker } from "vue2-leaflet"
@@ -77,12 +78,14 @@ export default {
     this.setup();
     this.ticker.refresh = setInterval(this.refresh, this.config.refreshDelaySec * 1000);
     this.ticker.follow = setInterval(this.follow, this.config.followDelaySec * 1000);
+    events.on("timeTravel", this.onTimeTravel)
   },
 
   destroyed() {
-    if (this.fovCircle) {
-      this.fovCircle.remove()
-    }
+    if (this.fovCircle) this.fovCircle.remove()
+    clearInterval(this.ticker.refresh)
+    clearInterval(this.ticker.follow)
+    events.off("timeTravel", this.onTimeTravel)
   },
 
   methods: {
@@ -130,6 +133,11 @@ export default {
         this.map.setView([lat, lng])
       }
     },
+
+    onTimeTravel() {
+      this.refresh()
+      this.follow()
+    }
   },
 
   watch: {
@@ -137,17 +145,8 @@ export default {
       // if sat change, setup
       this.setup()
     },
-    timestamp(a, b) {
-      // if difference is greater than 5s
-      // we consider time travel
-      if (Math.abs(a - b) > 5000) {
-        this.refresh()
-        this.$store.commit('setFollow', true)
-        this.follow()
-      }
-    },
-    "config.follow": {
-      handler() {
+    ["config.follow"]() {
+      if (this.config.follow) {
         this.follow()
       }
     }
