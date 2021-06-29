@@ -24,19 +24,19 @@
               <td><b>height</b></td>
               <td>{{ telemetry.height.toFixed(2) }} km</td>
             </tr>
-            <tr v-if="config.observer.enabled">
+            <tr v-if="observer.enabled">
               <td><b>velocity</b></td>
               <td>{{ telemetry.velocity.toFixed(2) }} km/s</td>
             </tr>
-            <tr v-if="config.observer.enabled">
+            <tr v-if="observer.enabled">
               <td><b>azimuth</b></td>
               <td>{{ telemetry.azimuth.toFixed(2) }}°</td>
             </tr>
-            <tr v-if="config.observer.enabled">
+            <tr v-if="observer.enabled">
               <td><b>elevation</b></td>
               <td>{{ telemetry.elevation.toFixed(2) }}°</td>
             </tr>
-            <tr v-if="config.observer.enabled">
+            <tr v-if="observer.enabled">
               <td><b>range</b></td>
               <td>{{ telemetry.range.toFixed(2) }} km</td>
             </tr>
@@ -68,7 +68,7 @@ export default {
   computed: {
     ...mapState([
       "tle",
-      "config"
+      "observer"
     ])
   },
 

@@ -51,10 +51,7 @@ export default {
       groundTracks: [],
       telemetry: {},
       fovCircle: null,
-      ticker: {
-        refresh: null,
-        follow: null
-      }
+      ticker: null
     }
   },
 
@@ -69,27 +66,27 @@ export default {
     },
     ...mapState([
       "map",
+      "speed",
       "config",
       "timestamp",
     ])
   },
 
   mounted() {
-    this.setup();
-    this.ticker.refresh = setInterval(this.refresh, this.config.refreshDelaySec * 1000);
-    this.ticker.follow = setInterval(this.follow, this.config.followDelaySec * 1000);
+    this.setup()
     events.on("timeTravel", this.onTimeTravel)
   },
 
   destroyed() {
     if (this.fovCircle) this.fovCircle.remove()
-    clearInterval(this.ticker.refresh)
-    clearInterval(this.ticker.follow)
+    clearTimeout(this.ticker)
     events.off("timeTravel", this.onTimeTravel)
   },
 
   methods: {
     setup() {
+      clearTimeout(this.ticker)
+
       this.telemetry = getSatelliteInfo([...this.tle], this.timestamp);
       const { lat, lng } = this.telemetry;
 
@@ -104,18 +101,7 @@ export default {
         stroke: false,
       }).addTo(this.map);
 
-      this.refresh();
-      this.follow();
-    },
-
-    refresh() {
-      // get telemetry
-      this.telemetry = getSatelliteInfo([...this.tle], this.timestamp);
-      const { lat, lng } = this.telemetry;
-
-      // set FoV circle
-      this.fovCircle.setLatLng({ lat, lng });
-      this.fovCircle.setRadius(this.fovRadius);
+      this.ticker = this.update()
     },
 
     async updateGroundTracks() {
@@ -123,11 +109,27 @@ export default {
         tle: [...this.tle],
         isLngLatFormat: false,
         startTimeMS: this.timestamp
-      });
+      })
     },
 
-    async follow() {
+    async update() {
+      // get telemetry
+      this.telemetry = getSatelliteInfo([...this.tle], this.timestamp);
+      const { lat, lng } = this.telemetry;
+
+      // set FoV circle
+      this.fovCircle.setLatLng({ lat, lng });
+      this.fovCircle.setRadius(this.fovRadius);
+
+      // update groundtracks
       await this.updateGroundTracks()
+
+      this.follow()
+      
+      setTimeout(this.update, this.config.tickerTrackerDelayMs)
+    },
+
+    follow() {
       if (this.config.follow) {
         const { lat, lng } = this.telemetry
         this.map.setView([lat, lng])
@@ -135,16 +137,16 @@ export default {
     },
 
     onTimeTravel() {
-      this.refresh()
+      this.update()
       this.follow()
     }
   },
 
   watch: {
     tle() {
-      // if sat change, setup
       this.setup()
     },
+
     ["config.follow"]() {
       if (this.config.follow) {
         this.follow()

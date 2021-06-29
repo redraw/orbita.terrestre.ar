@@ -74,11 +74,10 @@
       </v-dialog>
     </div>
     <div class="d-flex flex-row align-center">
-      <!-- speed -->
+      <!-- state -->
       <v-btn-toggle
-        v-model="speed"
-        class="mx-2"
-        rounded
+        v-model="state"
+        class="mx-sm-2"
         mandatory
         borderless
         dense
@@ -89,12 +88,12 @@
         <v-btn x-small :value="1">
           <v-icon small>mdi-play</v-icon>
         </v-btn>
-        <v-btn x-small :value="2" @click="speedX *= 2">
+        <v-btn x-small :value="2" @click="speed *= 2">
           <v-icon small>mdi-fast-forward</v-icon>
         </v-btn>
       </v-btn-toggle>
-      <span v-if="speedFactor > 1" class="mx-2">
-        {{ speedFactor }}x
+      <span v-if="speed > 1" class="mx-2">
+        {{ speed }}x
       </span>
       <!-- reset -->
       <v-tooltip top v-if="showReset">
@@ -136,8 +135,9 @@
 </template>
 
 <script>
-import { toISOString } from "@/utils/date"
+import { mapState } from "vuex"
 
+import { toISOString } from "@/utils/date"
 import { getEpochTimestamp } from "tle.js";
 
 export default {
@@ -155,8 +155,7 @@ export default {
       clock: new Date(),
       tleEpoch: new Date(),
       shiftMs: 0,
-      speed: 1,
-      speedX: 1,
+      state: 1,
       ticker: null,
       relative: {
         date: null,
@@ -178,8 +177,17 @@ export default {
   },
 
   computed: {
+    speed: {
+      get() {
+        return this.$store.state.speed
+      },
+      set(value) {
+        return this.$store.commit("setSpeed", value)
+      }
+    },
+
     showReset() {
-      return Math.abs(this.shiftMs) > 0 || this.speedFactor > 1
+      return Math.abs(this.shiftMs) > 0 || this.speed > 1
     },
 
     daysFromEpoch() {
@@ -188,9 +196,9 @@ export default {
       return days
     },
 
-    speedFactor() {
-      return this.speed > 0 ? this.speedX : 1
-    }
+    ...mapState([
+      "config",
+    ])
   },
 
   methods: {
@@ -215,37 +223,34 @@ export default {
       this.shiftMs = start.getTime() - now.getTime()
       this.$store.dispatch("timeTravel", start)
       this.dialogs.date = this.dialogs.time = false
-      this.reset()
     },
 
     tick() {
-      if (this.speed > 0) {
-        let now
-        // if play, and real-time (no shift)
-        if (this.speed == 1 && this.shiftMs == 0) {
-          // accurate now
-          now = new Date()
-        } else {
+      if (this.state > 0) {
+        const realTime = new Date()
+        let now = realTime
+        // if fast-forward
+        if (this.speed > 1) {
           // shifted clock
           now = this.clock
-          now.setSeconds(this.clock.getSeconds() + 1)
-          if (this.speedFactor > 1) {
-            this.shiftMs += this.speedFactor
-          }
+          now.setSeconds(this.clock.getSeconds() + this.speed)
+          this.shiftMs = now.getTime() - realTime.getTime()
+          this.clock = new Date(now)
+        } else {
+          this.clock = new Date(now.getTime() + this.shiftMs)
         }
-        // set clock
-        this.clock = new Date(now.getTime() + this.shiftMs)
         this.updateRelativeDateTime()
       }
       // schedule ticker
-      this.ticker = setTimeout(this.tick, 1000 / this.speedFactor)
+      this.ticker = setTimeout(this.tick, 1000 / this.speed)
     },
 
     reset() {
       clearTimeout(this.ticker)
+      const now = new Date()
       this.speed = 1
-      this.speedX = 1
       this.shiftMs = 0
+      this.$store.dispatch("timeTravel", now)
       this.tick()
     }
   },
@@ -262,9 +267,9 @@ export default {
       }
     },
 
-    speed() {
-      if (this.speed <= 1) {
-        this.speedX = 1
+    state() {
+      if (this.state <= 1) {
+        this.speed = 1
       }
     },
 

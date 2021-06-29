@@ -15,20 +15,20 @@ export default new Vuex.Store({
     tles: [],
     tle: [],
     timestamp: null,
+    speed: 1,
+    observer: {
+      enabled: false,
+      lat: 0,
+      lng: 0,
+      elevation: 0
+    },
     config: {
       terminator: true,
       follow: true,
       telemetry: true,
-      refreshDelaySec: 1,
-      followDelaySec: 30,
+      tickerTrackerDelayMs: 1000,
       tles: {
         group: "stations",
-      },
-      observer: {
-        enabled: false,
-        lat: 0,
-        lng: 0,
-        elevation: 0
       },
     },
   },
@@ -54,8 +54,8 @@ export default new Vuex.Store({
         color: "#ffffff",
         dashArray: "5 10",
         weight: 1,
-        opacity: 0.4,
-        fillOpacity: 0.4
+        opacity: 0.3,
+        fillOpacity: 0.5
       })
       state.terminator.addTo(state.map)
     },
@@ -83,6 +83,10 @@ export default new Vuex.Store({
 
     setTimestamp(state, value) {
       state.timestamp = value
+    },
+
+    setSpeed(state, value) {
+      state.speed = value
     }
   },
 
