@@ -101,7 +101,7 @@ export default {
         stroke: false,
       }).addTo(this.map);
 
-      this.ticker = this.update()
+      this.ticker = this.tick()
     },
 
     async updateGroundTracks() {
@@ -112,7 +112,7 @@ export default {
       })
     },
 
-    async update() {
+    async tick() {
       // get telemetry
       this.telemetry = getSatelliteInfo([...this.tle], this.timestamp);
       const { lat, lng } = this.telemetry;
@@ -124,9 +124,10 @@ export default {
       // update groundtracks
       await this.updateGroundTracks()
 
+      // follow
       this.follow()
       
-      setTimeout(this.update, this.config.tickerTrackerDelayMs)
+      this.ticker = setTimeout(this.tick, this.config.tickerTrackerDelayMs)
     },
 
     follow() {
@@ -137,8 +138,8 @@ export default {
     },
 
     onTimeTravel() {
-      this.update()
-      this.follow()
+      clearTimeout(this.ticker)
+      this.ticker = this.tick()
     }
   },
 
