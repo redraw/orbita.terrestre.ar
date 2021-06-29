@@ -10,8 +10,9 @@
         icon-url="/satellite-white.png"
       />
     </l-marker>
+    <!-- current orbit -->
     <l-polyline
-      v-if="groundTracks.length"
+      v-if="groundTracks.length === 3"
       :lat-lngs="groundTracks[1].slice(0, -5)"
       :weight="2"
     />
@@ -61,9 +62,11 @@ export default {
       // https://en.wikipedia.org/wiki/Horizon#Other_measures
       return R * Math.acos(R / (R + this.telemetry.height * 1000));
     },
+
     showTelemetry() {
       return this.config.telemetry && this.telemetry.lat && this.telemetry.lng
     },
+
     ...mapState([
       "map",
       "speed",
