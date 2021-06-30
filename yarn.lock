@@ -7108,10 +7108,10 @@ sass@~1.32.0:
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
 
-satellite.js@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/satellite.js/-/satellite.js-3.0.1.tgz#8eeda238624ea06405323e73f49603072d53a1eb"
-  integrity sha512-6oXEOHM3thTZvYh5OzEtXDuJGC9bBLVGVXA0KO1iuF1vlQP7TXHbxFalyVsHOfBWsZY6pfjjCiIAMnFG0sbmEA==
+satellite.js@^4.1.3:
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/satellite.js/-/satellite.js-4.1.3.tgz#a47382d5319efe672bf379d716a67110ca2990c4"
+  integrity sha512-l65XHxmT4n31DSGQy/jnu/sLfKn42g862h1p9NyalOEYCpEsplFAqUIT4+euK0AByizZML2Zkjbl0HWI79KC0A==
 
 sax@~1.2.4:
   version "1.2.4"
@@ -7849,12 +7849,12 @@ timsort@^0.3.0:
   resolved "https://registry.yarnpkg.com/timsort/-/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
   integrity sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
 
-tle.js@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/tle.js/-/tle.js-3.1.0.tgz#a52fea09de17db5ead95b23e0fe91e21a0dae4c5"
-  integrity sha512-PdaGIFsJo2q61FZMxG47yVfQsSywPofCKqEYCmfpaSX2QXnTldUsAy5uPBpvM2PgqG/7JtWNlOBaFrHHGnRvOg==
+tle.js@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/tle.js/-/tle.js-4.3.0.tgz#492a7a47fef420329d4c29f69ef3558176d34682"
+  integrity sha512-bxr0sL9Y4eTjjzKLTxKx9flkmo+uMDSb+aQbpZLE0a5ylOoJ9FstHmgsruPru0goO9b//NHvMeaxKxVFA9TCqw==
   dependencies:
-    satellite.js "^3.0.0"
+    satellite.js "^4.1.3"
 
 tmp@^0.0.33:
   version "0.0.33"
