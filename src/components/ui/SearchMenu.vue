@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-autocomplete
-      ref="satellites"
       v-if="tles.length"
+      ref="satellites"
       v-model="tle"
       :loading="loading"
       dense
@@ -16,13 +16,13 @@
       :search-input.sync="search"
       @input="$refs.satellites.blur()"
     >
-      <template v-slot:item="{ item }">
+      <template #item="{ item }">
         {{ item.text }}&nbsp;<small class="grey--text">{{ getCatalogNumber(item.value) }}</small>
       </template>
     </v-autocomplete>
     <div class="d-flex flex-column my-4">
       <v-tooltip right>
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-btn
             class="my-1"
             fab
@@ -39,7 +39,7 @@
         <span>Solar terminator</span>
       </v-tooltip>
       <v-tooltip right>
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-btn
             class="my-1"
             fab
@@ -56,7 +56,7 @@
         <span>Follow satellite</span>
       </v-tooltip>
       <v-tooltip right>
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-btn
             class="d-none d-sm-flex my-1"
             fab
@@ -83,6 +83,12 @@ import { getSatelliteName, getCatalogNumber } from "tle.js"
 const debounce = require("lodash/debounce");
 
 export default {
+  data() {
+    return {
+      search: "",
+    };
+  },
+
   computed: {
     tle: {
       get() {
@@ -106,10 +112,12 @@ export default {
     ]),
   },
 
-  data() {
-    return {
-      search: "",
-    };
+  watch: {
+    search: debounce(async function () {
+      if (this.search?.length > 2 && this.$refs.satellites.filteredItems.length === 0) {
+        this.$store.dispatch("fetchTLEs", { NAME: this.search });
+      }
+    }, 500)
   },
 
   methods: {
@@ -121,14 +129,6 @@ export default {
       "setFollow",
       "setTelemetry"
     ])
-  },
-
-  watch: {
-    search: debounce(async function () {
-      if (this.search?.length > 2 && this.$refs.satellites.filteredItems == 0) {
-        this.$store.dispatch("fetchTLEs", { NAME: this.search });
-      }
-    }, 500)
-  },
+  }
 };
 </script>

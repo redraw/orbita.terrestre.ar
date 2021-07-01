@@ -14,18 +14,30 @@
         :options="{ ext: 'png' }"
       />
       <l-control-zoom position="bottomright" />
-      <l-control class="pa-4" position="leftup">
-        <SearchMenu v-if="map"/>
+      <l-control
+        class="pa-4"
+        position="leftup"
+      >
+        <SearchMenu v-if="map" />
       </l-control>
-      <l-control class="pa-4 ma-0" position="bottomleft">
+      <l-control
+        class="pa-4 ma-0"
+        position="bottomleft"
+      >
         <CoordinatesText 
           class="d-none d-sm-flex my-1 grey--text" 
           style="z-index: 999" 
           :coords="mouse"
         />
-        <TimeTravel v-if="tle.length" :tle="tle"/>
+        <TimeTravel
+          v-if="tle.length"
+          :tle="tle"
+        />
       </l-control>
-      <Satellite v-if="tle.length" :tle="tle" />
+      <Satellite
+        v-if="tle.length"
+        :tle="tle"
+      />
     </l-map>
   </main>
 </template>

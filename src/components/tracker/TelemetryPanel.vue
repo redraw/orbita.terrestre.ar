@@ -1,8 +1,14 @@
 <template>
   <div>
-    <l-control class="d-none d-sm-flex" position="topright">
-      <v-simple-table dense style="background-color: rgba(0, 0, 0, 0.5)">
-        <template v-slot:default>
+    <l-control
+      class="d-none d-sm-flex"
+      position="topright"
+    >
+      <v-simple-table
+        dense
+        style="background-color: rgba(0, 0, 0, 0.5)"
+      >
+        <template #default>
           <tbody>
             <tr>
               <td><b>name</b></td>
@@ -54,15 +60,15 @@ import { getSatelliteName, getCatalogNumber } from "tle.js"
 import { LControl } from "vue2-leaflet"
 
 export default {
+
+  components: {
+    LControl,
+  },
   props: {
     telemetry: {
       type: Object,
       required: true
     }
-  },
-
-  components: {
-    LControl,
   },
 
   computed: {

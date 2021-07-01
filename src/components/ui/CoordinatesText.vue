@@ -1,6 +1,6 @@
 <template>
   <div>
-    {{ lat }}, {{ lng}}
+    {{ lat }}, {{ lng }}
   </div>
 </template>
 

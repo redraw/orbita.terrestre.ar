@@ -16,7 +16,10 @@
       :lat-lngs="groundTracks[1].slice(0, -5)"
       :weight="2"
     />
-    <TelemetryPanel v-if="showTelemetry" :telemetry="telemetry" />
+    <TelemetryPanel
+      v-if="showTelemetry"
+      :telemetry="telemetry"
+    />
   </div>
 </template>
 
@@ -33,18 +36,18 @@ import { getGroundTracks, getSatelliteInfo } from "tle.js";
 const R = 6371000; // Earth radius (meters)
 
 export default {
-  props: {
-    tle: {
-      type: Array,
-      required: true
-    }
-  },
 
   components: {
     LPolyline,
     LMarker,
     LIcon,
     TelemetryPanel
+  },
+  props: {
+    tle: {
+      type: Array,
+      required: true
+    }
   },
 
   data () {
@@ -73,6 +76,18 @@ export default {
       "config",
       "timestamp",
     ])
+  },
+
+  watch: {
+    tle() {
+      this.setup()
+    },
+
+    ["config.follow"]() {
+      if (this.config.follow) {
+        this.follow()
+      }
+    }
   },
 
   mounted() {
@@ -143,18 +158,6 @@ export default {
     onTimeTravel() {
       clearTimeout(this.ticker)
       this.ticker = this.tick()
-    }
-  },
-
-  watch: {
-    tle() {
-      this.setup()
-    },
-
-    ["config.follow"]() {
-      if (this.config.follow) {
-        this.follow()
-      }
     }
   }
 }

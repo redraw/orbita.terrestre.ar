@@ -6,19 +6,19 @@
         v-model="dialogs.date"
         width="290px"
       >
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <div
             class="font-weight-bold"
-            v-text="relative.date"
             v-bind="attrs"
             v-on="on"
+            v-text="relative.date"
           />
         </template>
         <v-date-picker
           v-model="date"
           scrollable
         >
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             text
             color="primary"
@@ -40,12 +40,12 @@
         v-model="dialogs.time"
         width="290px"
       >
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <div
             class="mx-2 font-weight-bold"
-            v-text="relative.time"
             v-bind="attrs"
             v-on="on"
+            v-text="relative.time"
           />
         </template>
         <v-time-picker
@@ -55,7 +55,7 @@
           full-width
           scrollable
         >
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             text
             color="primary"
@@ -82,22 +82,44 @@
         borderless
         dense
       >
-        <v-btn x-small :value="0">
-          <v-icon small>mdi-pause</v-icon>
+        <v-btn
+          x-small
+          :value="0"
+        >
+          <v-icon small>
+            mdi-pause
+          </v-icon>
         </v-btn>
-        <v-btn x-small :value="1">
-          <v-icon small>mdi-play</v-icon>
+        <v-btn
+          x-small
+          :value="1"
+        >
+          <v-icon small>
+            mdi-play
+          </v-icon>
         </v-btn>
-        <v-btn x-small :value="2" @click="speed *= 2">
-          <v-icon small>mdi-fast-forward</v-icon>
+        <v-btn
+          x-small
+          :value="2"
+          @click="speed *= 2"
+        >
+          <v-icon small>
+            mdi-fast-forward
+          </v-icon>
         </v-btn>
       </v-btn-toggle>
-      <span v-if="speed > 1" class="mx-2">
+      <span
+        v-if="speed > 1"
+        class="mx-2"
+      >
         {{ speed }}x
       </span>
       <!-- reset -->
-      <v-tooltip top v-if="showReset">
-        <template v-slot:activator="{ on, attrs }">
+      <v-tooltip
+        v-if="showReset"
+        top
+      >
+        <template #activator="{ on, attrs }">
           <v-icon 
             class="mx-2" 
             small 
@@ -113,8 +135,11 @@
         </span>
       </v-tooltip>
       <!-- days from epoch warning -->
-      <v-tooltip top v-if="daysFromEpoch > 14">
-        <template v-slot:activator="{ on, attrs }">
+      <v-tooltip
+        v-if="daysFromEpoch > 14"
+        top
+      >
+        <template #activator="{ on, attrs }">
           <v-icon 
             class="mx-2"
             color="yellow" 
@@ -168,14 +193,6 @@ export default {
     }
   },
 
-  created() {
-    this.tick()
-  },
-
-  destroyed() {
-    clearTimeout(this.ticker)
-  },
-
   computed: {
     speed: {
       get() {
@@ -199,6 +216,42 @@ export default {
     ...mapState([
       "config",
     ])
+  },
+
+  watch: {
+    clock() {
+      this.$store.commit("setTimestamp", this.clock.getTime())
+    },
+
+    tle: {
+      immediate: true,
+      handler() {
+        this.tleEpoch = getEpochTimestamp([...this.tle])
+      }
+    },
+
+    state() {
+      if (this.state <= 1) {
+        this.speed = 1
+      }
+    },
+
+    dialogs: {
+      deep: true,
+      handler() {
+        if (this.dialogs.date || this.dialogs.time) {
+          this.updateDateTime()
+        }
+      }
+    }
+  },
+
+  created() {
+    this.tick()
+  },
+
+  destroyed() {
+    clearTimeout(this.ticker)
   },
 
   methods: {
@@ -254,33 +307,5 @@ export default {
       this.tick()
     }
   },
-
-  watch: {
-    clock() {
-      this.$store.commit("setTimestamp", this.clock.getTime())
-    },
-
-    tle: {
-      immediate: true,
-      handler() {
-        this.tleEpoch = getEpochTimestamp([...this.tle])
-      }
-    },
-
-    state() {
-      if (this.state <= 1) {
-        this.speed = 1
-      }
-    },
-
-    dialogs: {
-      deep: true,
-      handler() {
-        if (this.dialogs.date || this.dialogs.time) {
-          this.updateDateTime()
-        }
-      }
-    }
-  }
 }
 </script>
