@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-autocomplete
-      v-if="tles.length"
       ref="satellites"
       v-model="tle"
       :loading="loading"
@@ -12,6 +11,7 @@
       solo-inverted
       auto-select-first
       persistent-hint
+      label="Satellite..."
       :items="satellites"
       :search-input.sync="search"
       @input="$refs.satellites.blur()"
