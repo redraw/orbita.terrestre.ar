@@ -83,6 +83,7 @@ export default new Vuex.Store({
 
     setTimestamp(state, value) {
       state.timestamp = value
+      state.terminator.setTime(value)
     },
 
     setSpeed(state, value) {
