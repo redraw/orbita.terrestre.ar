@@ -2,7 +2,7 @@
   "version": 2,
   "headers": [
     {
-      "source": "/api/proxy(.*)",
+      "source": "/api/celestrak(.*)",
       "headers": [
         {
           "key": "cache-control",

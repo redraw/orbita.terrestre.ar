@@ -13,9 +13,7 @@ async function getTLEs(query) {
   if (process.env.NODE_ENV == "development") {
     response = { data: TLE_SAMPLE }
   } else {
-    response = await http.get("/api/proxy", {
-      params: { url: `https://celestrak.com/NORAD/elements/gp.php?${params}` }
-    });
+    response = await http.get("/api/celestrak", { params });
   }
 
   const data = response.data.split("\n");
