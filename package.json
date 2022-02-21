@@ -19,7 +19,7 @@
     "vue": "^2.6.11",
     "vue-gtag": "^1.16.1",
     "vue2-leaflet": "^2.7.0",
-    "vuetify": "^2.4.0",
+    "vuetify": "^2.6.3",
     "vuex": "^3.4.0"
   },
   "devDependencies": {

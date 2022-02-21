@@ -4,16 +4,17 @@
       ref="satellites"
       v-model="tle"
       :loading="loading"
-      dense
-      cache-items
-      hide-details
-      flat
-      solo-inverted
-      auto-select-first
-      persistent-hint
-      label="Satellite..."
       :items="satellites"
-      :search-input.sync="search"
+      :search-input.sync="query"
+      :filter="filter"
+      auto-select-first
+      hide-details
+      hide-no-data
+      solo-inverted
+      persistent-hint
+      dense
+      flat
+      label="Satellite..."
       @input="$refs.satellites.blur()"
     >
       <template #item="{ item }">
@@ -85,7 +86,7 @@ const debounce = require("lodash/debounce");
 export default {
   data() {
     return {
-      search: "",
+      query: "",
     };
   },
 
@@ -113,14 +114,21 @@ export default {
   },
 
   watch: {
-    search: debounce(async function () {
-      if (this.search?.length > 2 && this.$refs.satellites.filteredItems.length === 0) {
-        this.$store.dispatch("fetchTLEs", { NAME: this.search });
+    query: debounce(async function () {
+      if (this.query?.length > 2 && this.$refs.satellites.filteredItems.length === 0) {
+        const _type = Array.from(this.query).some(isNaN) ? "NAME" : "CATNR"
+        this.$store.dispatch("fetchTLEs", { [_type]: this.query });
       }
     }, 500)
   },
 
   methods: {
+    filter (item, queryText, itemText) {
+      const query = queryText.toLowerCase()
+      const a = itemText.toLowerCase().indexOf(query) > -1
+      const b = getCatalogNumber(item.value).toString().indexOf(query) > -1
+      return a || b
+    },
     getSatelliteName,
     getCatalogNumber,
     ...mapMutations([

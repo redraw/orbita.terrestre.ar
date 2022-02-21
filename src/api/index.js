@@ -10,18 +10,20 @@ async function getTLEs(query) {
     ...query
   })
 
-  if (process.env.NODE_ENV == "development") {
-    response = { data: TLE_SAMPLE }
-  } else {
+  if (process.env.NODE_ENV === "production" || process.env.VUE_APP_USE_CELESTRAK === "true") {
     response = await http.get("/api/celestrak", { params });
+  } else {
+    response = { data: TLE_SAMPLE }
   }
 
   const data = response.data.split("\n");
   let tles = [];
 
   for (let i = 0; i < data.length; i += 3) {
-    let tle = data.slice(i, i + 3);
-    tles.push(tle);
+    let tle = data.slice(i, i + 3).map(line => line.trim());
+    if (tle.length === 3) {
+      tles.push(tle);
+    }
   }
   
   return tles;
