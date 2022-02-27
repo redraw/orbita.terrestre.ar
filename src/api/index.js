@@ -25,7 +25,7 @@ async function getTLEs(query) {
       tles.push(tle);
     }
   }
-  
+
   return tles;
 }
 

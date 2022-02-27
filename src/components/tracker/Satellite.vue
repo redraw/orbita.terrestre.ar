@@ -74,6 +74,7 @@ export default {
       "map",
       "speed",
       "config",
+      "observer",
       "timestamp",
     ])
   },
@@ -105,7 +106,7 @@ export default {
     setup() {
       clearTimeout(this.ticker)
 
-      this.telemetry = getSatelliteInfo([...this.tle], this.timestamp);
+      this.updateTelemetry()
       const { lat, lng } = this.telemetry;
 
       // remove FoV circle
@@ -122,6 +123,19 @@ export default {
       this.ticker = this.tick()
     },
 
+    updateTelemetry() {
+      if (this.observer.enabled) {
+        this.telemetry = getSatelliteInfo(
+          [...this.tle],
+          this.timestamp,
+          this.observer.lat,
+          this.observer.lng
+        );
+      } else {
+        this.telemetry = getSatelliteInfo([...this.tle], this.timestamp);
+      }
+    },
+
     async updateGroundTracks() {
       this.groundTracks = await getGroundTracks({
         tle: [...this.tle],
@@ -132,7 +146,7 @@ export default {
 
     async tick() {
       // get telemetry
-      this.telemetry = getSatelliteInfo([...this.tle], this.timestamp);
+      this.updateTelemetry()
       const { lat, lng } = this.telemetry;
 
       // set FoV circle

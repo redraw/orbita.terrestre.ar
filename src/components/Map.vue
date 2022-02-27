@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
+import { mapState, mapMutations } from "vuex"
 import { SearchMenu, TimeTravel, CoordinatesText } from "@/components/ui"
 import Satellite from "@/components/tracker/Satellite"
 
@@ -94,7 +94,11 @@ export default {
       "tle",
       "map",
       "config",
-    ])
+    ]),
+  },
+
+  created () {
+    navigator.geolocation.getCurrentPosition(this.setObserver, console.error)
   },
 
   methods: {
@@ -113,6 +117,9 @@ export default {
         self.$store.commit("setFollow", false)
       })
     },
+    ...mapMutations([
+      "setObserver"
+    ])
   }
 };
 </script>

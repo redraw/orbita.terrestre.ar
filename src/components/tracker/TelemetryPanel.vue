@@ -39,11 +39,11 @@
               <td>{{ telemetry.azimuth.toFixed(2) }}°</td>
             </tr>
             <tr v-if="observer.enabled">
-              <td><b>elevation</b></td>
+              <td><b>altitude</b></td>
               <td>{{ telemetry.elevation.toFixed(2) }}°</td>
             </tr>
             <tr v-if="observer.enabled">
-              <td><b>range</b></td>
+              <td><b>distance</b></td>
               <td>{{ telemetry.range.toFixed(2) }} km</td>
             </tr>
           </tbody>

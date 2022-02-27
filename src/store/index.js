@@ -7,7 +7,7 @@ import SolarTerminator from "@joergdietrich/leaflet.terminator"
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const store = {
   state: {
     map: null,
     terminator: null,
@@ -88,6 +88,12 @@ export default new Vuex.Store({
 
     setSpeed(state, value) {
       state.speed = value
+    },
+
+    setObserver(state, { coords }) {
+      state.observer.enabled = true
+      state.observer.lat = coords.latitude
+      state.observer.lng = coords.longitude
     }
   },
 
@@ -115,4 +121,6 @@ export default new Vuex.Store({
   },
 
   modules: {}
-})
+}
+
+export default new Vuex.Store(store)
