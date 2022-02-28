@@ -20,7 +20,8 @@ const store = {
       enabled: false,
       lat: 0,
       lng: 0,
-      elevation: 0
+      elevation: 0,
+      location: null
     },
     config: {
       terminator: true,
@@ -90,10 +91,14 @@ const store = {
       state.speed = value
     },
 
-    setObserver(state, { coords }) {
+    setObserverCoords(state, { coords }) {
       state.observer.enabled = true
       state.observer.lat = coords.latitude
       state.observer.lng = coords.longitude
+    },
+
+    setObserverLocation(state, location) {
+      state.observer.location = location
     }
   },
 
@@ -110,6 +115,12 @@ const store = {
       commit("setupTerminator")
       await dispatch("fetchTLEs", { GROUP: state.config.tles.group })
       commit("updateSat", state.tles[0])
+    },
+
+    async onGeolocation({ commit }, position) {
+      commit("setObserverCoords", position)
+      const location = await api.getLocationFromCoords(position.coords)
+      commit("setObserverLocation", location)
     },
 
     timeTravel({ commit }, start) {

@@ -36,13 +36,13 @@ import { getGroundTracks, getSatelliteInfo } from "tle.js";
 const R = 6371000; // Earth radius (meters)
 
 export default {
-
   components: {
     LPolyline,
     LMarker,
     LIcon,
     TelemetryPanel
   },
+
   props: {
     tle: {
       type: Array,

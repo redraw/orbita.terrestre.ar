@@ -29,6 +29,23 @@ async function getTLEs(query) {
   return tles;
 }
 
+async function getLocationFromCoords(coords) {
+  const params = new URLSearchParams({
+    lat: coords.latitude,
+    lon: coords.longitude,
+    format: "json"
+  })
+
+  try {
+    const response = await http.get("https://nominatim.openstreetmap.org/reverse", { params })
+    return response.data.address
+  } catch (e) {
+    console.error(e)
+    return {}
+  }
+}
+
 export default {
-  getTLEs
+  getTLEs,
+  getLocationFromCoords,
 }

@@ -38,17 +38,27 @@
         v-if="tle.length"
         :tle="tle"
       />
+      <l-marker
+        v-if="observer.enabled"
+        :lat-lng="[observer.lat, observer.lng]"
+      >
+        <l-icon>
+          <div>📍 {{ observer.location.city }}, {{ observer.location.country }}</div>
+        </l-icon>
+      </l-marker>
     </l-map>
   </main>
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex"
+import { mapState, mapActions } from "vuex"
 import { SearchMenu, TimeTravel, CoordinatesText } from "@/components/ui"
 import Satellite from "@/components/tracker/Satellite"
 
 import {
   LMap,
+  LIcon,
+  LMarker,
   LControl,
   LTileLayer,
   LControlZoom,
@@ -59,6 +69,8 @@ export default {
     LMap,
     LControl,
     LTileLayer,
+    LIcon,
+    LMarker,
     LControlZoom,
     Satellite,
     SearchMenu,
@@ -93,12 +105,13 @@ export default {
     ...mapState([
       "tle",
       "map",
+      "observer",
       "config",
     ]),
   },
 
   created () {
-    navigator.geolocation.getCurrentPosition(this.setObserver, console.error)
+    navigator.geolocation.getCurrentPosition(this.onGeolocation, console.error)
   },
 
   methods: {
@@ -117,8 +130,8 @@ export default {
         self.$store.commit("setFollow", false)
       })
     },
-    ...mapMutations([
-      "setObserver"
+    ...mapActions([
+      "onGeolocation"
     ])
   }
 };

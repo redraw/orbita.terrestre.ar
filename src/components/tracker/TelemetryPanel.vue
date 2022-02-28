@@ -1,9 +1,16 @@
 <template>
   <div>
     <l-control
-      class="d-none d-sm-flex"
+      class="d-none d-sm-flex flex-column"
       position="topright"
     >
+      <skychart
+        v-show="showSkychart"
+        :sat-name="getSatelliteName(tle)"
+        :telemetry="telemetry"
+        :current-pass="currentPass"
+        style="max-width: 250px"
+      />
       <v-simple-table
         dense
         style="background-color: rgba(0, 0, 0, 0.5)"
@@ -54,31 +61,77 @@
 </template>
 
 <script>
-import { mapState } from "vuex"
-import { getSatelliteName, getCatalogNumber } from "tle.js"
+import { mapState } from "vuex";
+import { getSatelliteInfo, getSatelliteName, getCatalogNumber } from "tle.js";
 
-import { LControl } from "vue2-leaflet"
+import { LControl } from "vue2-leaflet";
+import Skychart from './Skychart.vue';
 
 export default {
-
   components: {
     LControl,
+    Skychart,
   },
+
   props: {
     telemetry: {
       type: Object,
-      required: true
+      required: true,
+    },
+  },
+
+  data() {
+    return {
+      currentPass: []
     }
   },
 
   computed: {
-    ...mapState([
-      "tle",
-      "observer"
-    ])
+    showSkychart () {
+      return this.observer.enabled && this.telemetry.elevation > 0
+    },
+    ...mapState(["tle", "timestamp", "observer",]),
+  },
+
+  watch: {
+    showSkychart: {
+      immediate: true,
+      handler(value) {
+        if (value > 0 && this.currentPass.length == 0) {
+          this.calculatePass()
+        } else if (this.currentPass.length > 0) {
+          this.resetPass()
+        }
+      }
+    }
   },
 
   methods: {
+    calculatePass() {
+      let telemetry, alt
+      let ts = this.timestamp
+      do {
+        telemetry = getSatelliteInfo(
+          [...this.tle],
+          ts,
+          this.observer.lat,
+          this.observer.lng
+        )
+        alt = telemetry.elevation
+        this.currentPass.push({
+          lat: telemetry.elevation,
+          az: telemetry.azimuth,
+          ts
+        })
+        ts = ts + 30 * 1000 // forward 30s
+      } while (alt > 0);
+      console.log("calculated pass!", this.currentPass)
+    },
+
+    resetPass() {
+      this.currentPass = []
+    },
+
     getSatelliteName,
     getCatalogNumber,
   }
