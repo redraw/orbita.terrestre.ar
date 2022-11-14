@@ -131,7 +131,7 @@
           </v-icon>
         </template>
         <span>
-          Back to real-time
+          {{ $t("timetravel.back") }}
         </span>
       </v-tooltip>
       <!-- days from epoch warning -->
@@ -151,8 +151,7 @@
           </v-icon>
         </template>
         <span>
-          TLE epoch is {{ daysFromEpoch }} days away from current datetime.<br>
-          Prediction might be inaccurate
+          {{ $t("timetravel.outdated_tle", { daysFromEpoch }) }}
         </span>
       </v-tooltip>
     </div>

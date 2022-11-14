@@ -136,16 +136,26 @@ export default {
       "map",
       "observer",
       "config",
+      "locale",
     ]),
   },
 
   created () {
     this.infoDialog = !window.localStorage.getItem("infoDialog")
+    this.$i18n.locale = window.localStorage.getItem("locale")
+  },
+
+  watch: {
+    locale(value) {
+      console.log(`changing locale: ${value}`)  // eslint-disable-line
+      this.$i18n.locale = value
+    }
   },
 
   methods: {
     closeInfoDialog() {
       this.infoDialog = false
+      window.localStorage.setItem("infoDialog", false)
     },
 
     async onMapReady() {

@@ -18,39 +18,39 @@
         <template #default>
           <tbody>
             <tr>
-              <td><b>name</b></td>
+              <td><b>{{ $t("telemetry.name") }}</b></td>
               <td>{{ getSatelliteName(tle) }}</td>
             </tr>
             <tr>
-              <td><b>norad</b></td>
+              <td><b>{{ $t("telemetry.norad") }}</b></td>
               <td>{{ getCatalogNumber(tle) }}</td>
             </tr>
             <tr>
-              <td><b>lat</b></td>
+              <td><b>{{ $t("telemetry.lat") }}</b></td>
               <td>{{ telemetry.lat.toFixed(2) }}°</td>
             </tr>
             <tr>
-              <td><b>lng</b></td>
+              <td><b>{{ $t("telemetry.lng") }}</b></td>
               <td>{{ telemetry.lng.toFixed(2) }}°</td>
             </tr>
             <tr>
-              <td><b>height</b></td>
+              <td><b>{{ $t("telemetry.height") }}</b></td>
               <td>{{ telemetry.height.toFixed(2) }} km</td>
             </tr>
             <tr v-if="observer.enabled">
-              <td><b>velocity</b></td>
+              <td><b>{{ $t("telemetry.velocity") }}</b></td>
               <td>{{ telemetry.velocity.toFixed(2) }} km/s</td>
             </tr>
             <tr v-if="observer.enabled">
-              <td><b>azimuth</b></td>
+              <td><b>{{ $t("telemetry.azimuth") }}</b></td>
               <td>{{ telemetry.azimuth.toFixed(2) }}°</td>
             </tr>
             <tr v-if="observer.enabled">
-              <td><b>altitude</b></td>
+              <td><b>{{ $t("telemetry.altitude") }}</b></td>
               <td>{{ telemetry.elevation.toFixed(2) }}°</td>
             </tr>
             <tr v-if="observer.enabled">
-              <td><b>distance</b></td>
+              <td><b>{{ $t("telemetry.distance") }}</b></td>
               <td>{{ telemetry.range.toFixed(2) }} km</td>
             </tr>
           </tbody>

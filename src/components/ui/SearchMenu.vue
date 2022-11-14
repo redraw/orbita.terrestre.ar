@@ -25,23 +25,6 @@
       <v-tooltip right>
         <template #activator="{ on, attrs }">
           <v-btn
-            class="d-none d-sm-flex my-1"
-            fab
-            x-small
-            v-bind="attrs"
-            v-on="on"
-            @click="geolocate"
-          >
-            <v-icon :color="isLocated ? 'primary': ''">
-              mdi-crosshairs-gps
-            </v-icon>
-          </v-btn>
-        </template>
-        <span>Locate me</span>
-      </v-tooltip>
-      <v-tooltip right>
-        <template #activator="{ on, attrs }">
-          <v-btn
             class="my-1"
             fab
             x-small
@@ -54,7 +37,7 @@
             </v-icon>
           </v-btn>
         </template>
-        <span>Solar terminator</span>
+        <span>{{ $t('menu.solar_terminator') }}</span>
       </v-tooltip>
       <v-tooltip right>
         <template #activator="{ on, attrs }">
@@ -71,7 +54,7 @@
             </v-icon>
           </v-btn>
         </template>
-        <span>Follow satellite</span>
+        <span>{{ $t('menu.follow_satellite') }}</span>
       </v-tooltip>
       <v-tooltip right>
         <template #activator="{ on, attrs }">
@@ -88,7 +71,24 @@
             </v-icon>
           </v-btn>
         </template>
-        <span>Show telemetry panel</span>
+        <span>{{ $t('menu.telemetry') }}</span>
+      </v-tooltip>
+      <v-tooltip right>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            class="d-none d-sm-flex my-1"
+            fab
+            x-small
+            v-bind="attrs"
+            v-on="on"
+            @click="geolocate"
+          >
+            <v-icon :color="isLocated ? 'primary': ''">
+              mdi-crosshairs-gps
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('menu.locate_me') }}</span>
       </v-tooltip>
     </div>
   </div>

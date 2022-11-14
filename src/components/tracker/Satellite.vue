@@ -5,7 +5,7 @@
       :lat-lng="telemetry"
     >
       <l-icon
-        v-if="['ARSAT-1', 'ARSAT-2', 'SAOCOM 1A', 'SAOCOM 1B'].includes(this.name)"
+        v-if="['ARSAT 1', 'ARSAT 2', 'SAOCOM 1A', 'SAOCOM 1B'].includes(this.name)"
         :icon-size="[50, 50]"
         :icon-anchor="[15, 25]"
         icon-url="/arsat.svg"

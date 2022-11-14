@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import VueGtag from "vue-gtag";
 import vuetify from './plugins/vuetify'
+import i18n from './plugins/i18n'
 import './plugins/leaflet'
 import store from './store'
 
@@ -14,5 +15,6 @@ Vue.use(VueGtag, {
 new Vue({
   vuetify,
   store,
+  i18n,
   render: h => h(App)
 }).$mount('#app')
