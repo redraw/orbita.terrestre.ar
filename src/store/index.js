@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 
 import api from "@/api"
 import events from "@/eventbus"
+
+import { distance as wordDistance } from 'closest-match'
 import SolarTerminator from "@joergdietrich/leaflet.terminator"
 
 Vue.use(Vuex)
@@ -103,9 +105,12 @@ const store = {
   },
 
   actions: {
-    async fetchTLEs({ commit }, params) {
+    async fetchTLEs({ commit }, { params, query }) {
       commit("setLoading", true)
       const data = await api.getTLEs(params)
+      if (query) {
+        data.sort((a, b) => wordDistance(a[0], query) - wordDistance(b[0], query))
+      }
       commit("setLoading", false)
       commit("updateTLEs", data)
     },
@@ -113,7 +118,11 @@ const store = {
     async mapReady({ commit, dispatch, state }, map) {
       commit("setupMap", map)
       commit("setupTerminator")
-      await dispatch("fetchTLEs", { GROUP: state.config.tles.group })
+      await dispatch("fetchTLEs", {
+        params: {
+          GROUP: state.config.tles.group
+        }
+      })
       commit("updateSat", state.tles[0])
     },
 

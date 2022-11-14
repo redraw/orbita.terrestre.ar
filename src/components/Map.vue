@@ -1,5 +1,33 @@
 <template>
   <main>
+    <v-dialog
+      v-model="infoDialog"
+      open-on-focus
+      width="500"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Tracker satélites
+        </v-card-title>
+
+        <v-card-text>
+          Esta herramienta sirve para trackear satélites en tiempo real
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="closeInfoDialog"
+          >
+            Cerrar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <l-map
       ref="map"
       :center="center"
@@ -39,7 +67,7 @@
         :tle="tle"
       />
       <l-marker
-        v-if="observer.enabled"
+        v-if="observer.enabled && observer.location"
         :lat-lng="[observer.lat, observer.lng]"
       >
         <l-icon>
@@ -51,7 +79,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex"
+import { mapState } from "vuex"
 import { SearchMenu, TimeTravel, CoordinatesText } from "@/components/ui"
 import Satellite from "@/components/tracker/Satellite"
 
@@ -98,7 +126,8 @@ export default {
     mouse: {
       lat: 0,
       lng: 0
-    }
+    },
+    infoDialog: false,
   }),
 
   computed: {
@@ -111,10 +140,14 @@ export default {
   },
 
   created () {
-    navigator.geolocation.getCurrentPosition(this.onGeolocation, console.error)
+    this.infoDialog = !window.localStorage.getItem("infoDialog")
   },
 
   methods: {
+    closeInfoDialog() {
+      this.infoDialog = false
+    },
+
     async onMapReady() {
       const self = this
       const map = this.$refs.map.mapObject
@@ -130,9 +163,6 @@ export default {
         self.$store.commit("setFollow", false)
       })
     },
-    ...mapActions([
-      "onGeolocation"
-    ])
   }
 };
 </script>
@@ -152,6 +182,7 @@ main {
   font-family: monospace !important;
 }
 .leaflet-control-attribution {
-  background: rgba(255, 255, 255, 0.3) !important
+  /* background: rgba(255, 255, 255, 0.3) !important */
+  display: none;
 }
 </style>

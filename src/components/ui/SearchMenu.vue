@@ -25,6 +25,23 @@
       <v-tooltip right>
         <template #activator="{ on, attrs }">
           <v-btn
+            class="d-none d-sm-flex my-1"
+            fab
+            x-small
+            v-bind="attrs"
+            v-on="on"
+            @click="geolocate"
+          >
+            <v-icon :color="isLocated ? 'primary': ''">
+              mdi-crosshairs-gps
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>Locate me</span>
+      </v-tooltip>
+      <v-tooltip right>
+        <template #activator="{ on, attrs }">
+          <v-btn
             class="my-1"
             fab
             x-small
@@ -78,7 +95,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 import { getSatelliteName, getCatalogNumber } from "tle.js"
 
 const debounce = require("lodash/debounce");
@@ -87,6 +104,7 @@ export default {
   data() {
     return {
       query: "",
+      isLocated: false
     };
   },
 
@@ -117,25 +135,50 @@ export default {
     query: debounce(async function () {
       if (this.query?.length > 2 && this.$refs.satellites.filteredItems.length === 0) {
         const _type = Array.from(this.query).some(isNaN) ? "NAME" : "CATNR"
-        this.$store.dispatch("fetchTLEs", { [_type]: this.query });
+        this.$store.dispatch("fetchTLEs", {
+          query: this.query,
+          params: {
+            [_type]: this.query
+          }
+        });
       }
     }, 500)
   },
 
+  async created () {
+    const geoPerm = await navigator.permissions.query({name: "geolocation"})
+    if (geoPerm.state === "granted") {
+      this.geolocate()
+    }
+  },
+
   methods: {
+    geolocate() {
+      navigator.geolocation.getCurrentPosition(async (value) => {
+        await this.onGeolocation(value)
+        this.isLocated = true
+      }, console.error)
+    },
+
     filter (item, queryText, itemText) {
       const query = queryText.toLowerCase()
       const a = itemText.toLowerCase().indexOf(query) > -1
       const b = getCatalogNumber(item.value).toString().indexOf(query) > -1
       return a || b
     },
+
     getSatelliteName,
     getCatalogNumber,
+
     ...mapMutations([
       "updateSat",
       "setTerminator",
       "setFollow",
-      "setTelemetry"
+      "setTelemetry",
+    ]),
+
+    ...mapActions([
+      "onGeolocation",
     ])
   }
 };
