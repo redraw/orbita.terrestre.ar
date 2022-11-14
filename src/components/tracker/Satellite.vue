@@ -5,6 +5,13 @@
       :lat-lng="telemetry"
     >
       <l-icon
+        v-if="['ARSAT-1', 'ARSAT-2', 'SAOCOM 1A', 'SAOCOM 1B'].includes(this.name)"
+        :icon-size="[50, 50]"
+        :icon-anchor="[15, 25]"
+        icon-url="/arsat.svg"
+      />
+      <l-icon
+        v-else
         :icon-size="[32, 37]"
         :icon-anchor="[15, 25]"
         icon-url="/satellite-white.png"
@@ -31,7 +38,7 @@ import TelemetryPanel from "@/components/tracker/TelemetryPanel"
 import { LPolyline, LIcon, LMarker } from "vue2-leaflet"
 import LGeo from "leaflet-geodesy";
 
-import { getGroundTracks, getSatelliteInfo } from "tle.js";
+import { getSatelliteName, getGroundTracks, getSatelliteInfo } from "tle.js";
 
 const R = 6371000; // Earth radius (meters)
 
@@ -68,6 +75,10 @@ export default {
 
     showTelemetry() {
       return this.config.telemetry && this.telemetry.lat && this.telemetry.lng
+    },
+
+    name () {
+      return getSatelliteName(this.tle)
     },
 
     ...mapState([
