@@ -91,6 +91,7 @@ import {
   LTileLayer,
   LControlZoom,
 } from "vue2-leaflet";
+import { getCatalogNumber } from 'tle.js';
 
 export default {
   components: {
@@ -149,6 +150,13 @@ export default {
     locale(value) {
       console.log(`changing locale: ${value}`)  // eslint-disable-line
       this.$i18n.locale = value
+    },
+    
+    tle(value) {
+      const norad = getCatalogNumber(value)
+      if (norad != this.$route.params?.norad) {
+        this.$router.push(`/${norad}`)
+      }
     }
   },
 
@@ -162,6 +170,8 @@ export default {
       const self = this
       const map = this.$refs.map.mapObject
       this.$store.dispatch("mapReady", map)
+
+      // Event handlers
       map.on("mousemove", function (e) {
         const {lat, lng} = e.latlng
         self.mouse = {
@@ -172,6 +182,12 @@ export default {
       map.on("dragstart", function() {
         self.$store.commit("setFollow", false)
       })
+
+      // Set router params
+      const norad = this.$route.params?.norad
+      if (norad) {
+        this.$store.dispatch("fetchTLEs", { params: { "CATNR": norad }})
+      }
     },
   }
 };

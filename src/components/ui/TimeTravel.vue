@@ -154,6 +154,25 @@
           {{ $t("timetravel.outdated_tle", { daysFromEpoch }) }}
         </span>
       </v-tooltip>
+      <!-- share -->
+      <v-tooltip
+        top
+      >
+        <template #activator="{ on, attrs }">
+          <v-icon 
+            class="mx-2" 
+            small 
+            v-bind="attrs"
+            v-on="on"
+            @click="shareURL"
+          >
+            mdi-share
+          </v-icon>
+        </template>
+        <span>
+          {{ shareText }}
+        </span>
+      </v-tooltip>
     </div>
   </div>
 </template>
@@ -162,7 +181,7 @@
 import { mapState } from "vuex"
 
 import { toISOString } from "@/utils/date"
-import { getEpochTimestamp } from "tle.js";
+import { getCatalogNumber, getEpochTimestamp } from "tle.js";
 
 export default {
   props: {
@@ -189,6 +208,8 @@ export default {
         date: false,
         time: false
       },
+      shareText: this.$t("timetravel.share"),
+      shareTextTimeout: null
     }
   },
 
@@ -246,6 +267,14 @@ export default {
   },
 
   created() {
+    // Shift time if timestamp exists in route params
+    const ts = this.$route.params?.ts
+    if (ts) {
+      const start = new Date(parseInt(ts))
+      this.shiftMs = start.getTime() - this.clock.getTime()
+      this.$store.dispatch("timeTravel", start)
+    }
+
     this.tick()
   },
 
@@ -275,6 +304,14 @@ export default {
       this.shiftMs = start.getTime() - now.getTime()
       this.$store.dispatch("timeTravel", start)
       this.dialogs.date = this.dialogs.time = false
+      this.updateURL()
+    },
+
+    updateURL() {
+      const norad = getCatalogNumber(this.tle)
+      const now = new Date()
+      const shiftedClock = new Date(now.getTime() + this.shiftMs)
+      this.$router.push(`/${norad}/${shiftedClock.getTime()}`)
     },
 
     tick() {
@@ -304,6 +341,17 @@ export default {
       this.shiftMs = 0
       this.$store.dispatch("timeTravel", now)
       this.tick()
+    },
+
+    shareURL() {
+      this.updateURL()
+      const url = window.location.href
+      navigator.clipboard.writeText(url)
+      this.shareText = this.$t("timetravel.shared", {url})
+      clearTimeout(this.shareTextTimeout)
+      this.shareTextTimeout = setTimeout(() => {
+        this.shareText = this.$t("timetravel.share")
+      }, 5000)
     }
   },
 }

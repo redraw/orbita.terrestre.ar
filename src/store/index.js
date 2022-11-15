@@ -18,7 +18,7 @@ const store = {
     tle: [],
     timestamp: null,
     speed: 1,
-    locale: "en",
+    locale: window.localStorage.getItem("locale"),
     observer: {
       enabled: false,
       lat: 0,
@@ -104,25 +104,26 @@ const store = {
       state.observer.location = location
     },
 
-    setLocale(state, value, force = false) {
-      const locale = window.localStorage.getItem("locale")
-      if (!locale || force) {
-        state.locale = value.toLowerCase()
-        window.localStorage.setItem("locale", value)
-      }
+    setLocale(state, value) {
+      state.locale = value
+      window.localStorage.setItem("locale", value)
     }
   },
 
   actions: {
-    async fetchTLEs({ commit }, { params, query }) {
+    async fetchTLEs({ state, commit }, { params, query }) {
       commit("setLoading", true)
       const {tles, locale} = await api.getTLEs(params)
+
       if (query) {
         tles.sort((a, b) => wordDistance(a[0], query) - wordDistance(b[0], query))
       }
-      commit("setLoading", false)
-      commit("setLocale", locale)
       commit("updateTLEs", tles)
+
+      if (!state.locale) {
+        commit("setLocale", locale)
+      }
+      commit("setLoading", false)
     },
 
     async mapReady({ commit, dispatch, state }, map) {

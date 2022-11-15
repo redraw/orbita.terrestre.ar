@@ -1,15 +1,5 @@
 <template>
   <v-app>
-    <Map />
+    <router-view />
   </v-app>
 </template>
-
-<script>
-import Map from "@/components/Map";
-
-export default {
-  components: {
-    Map,
-  },
-};
-</script>

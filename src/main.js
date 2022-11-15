@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import App from './App.vue'
 import VueGtag from "vue-gtag";
+
 import vuetify from './plugins/vuetify'
 import i18n from './plugins/i18n'
-import './plugins/leaflet'
+import router from './plugins/router'
 import store from './store'
+import './plugins/leaflet'
 
 Vue.config.productionTip = false
 
@@ -16,5 +18,6 @@ new Vue({
   vuetify,
   store,
   i18n,
+  router,
   render: h => h(App)
 }).$mount('#app')
