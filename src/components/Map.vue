@@ -7,23 +7,30 @@
     >
       <v-card>
         <v-card-title class="text-h5">
-          Tracker satélites
+          {{ $t("hello.title") }}
         </v-card-title>
 
-        <v-card-text>
-          Esta herramienta sirve para trackear satélites en tiempo real
-        </v-card-text>
+        <v-card-text v-html="$t('hello.content')" />
 
-        <v-divider></v-divider>
+        <v-divider />
 
         <v-card-actions>
+          <v-btn
+            color="primary"
+            text
+            target="_blank"
+            href="https://github.com/redraw/groundtrack"
+          >
+            <v-icon class="mr-2">mdi-github</v-icon>
+            Github
+          </v-btn>
           <v-spacer></v-spacer>
           <v-btn
             color="primary"
             text
             @click="closeInfoDialog"
           >
-            Cerrar
+            {{ $t("hello.close") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -46,7 +53,7 @@
         class="pa-4"
         position="leftup"
       >
-        <SearchMenu v-if="map" />
+        <SearchMenu v-if="map" @showInfo="infoDialog = true"/>
       </l-control>
       <l-control
         class="pa-4 ma-0"

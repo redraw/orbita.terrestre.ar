@@ -73,6 +73,7 @@
         </template>
         <span>{{ $t('menu.telemetry') }}</span>
       </v-tooltip>
+      <!-- observer location -->
       <v-tooltip right>
         <template #activator="{ on, attrs }">
           <v-btn
@@ -89,6 +90,24 @@
           </v-btn>
         </template>
         <span>{{ $t('menu.locate_me') }}</span>
+      </v-tooltip>
+      <!-- observer location -->
+      <v-tooltip right>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            class="d-none d-sm-flex my-1"
+            x-small
+            fab
+            v-bind="attrs"
+            v-on="on"
+            @click="$emit('showInfo')"
+          >
+            <v-icon>
+              mdi-information-variant
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('menu.info') }}</span>
       </v-tooltip>
     </div>
   </div>
