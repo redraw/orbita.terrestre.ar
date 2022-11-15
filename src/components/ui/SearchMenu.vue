@@ -7,7 +7,6 @@
       :items="satellites"
       :search-input.sync="query"
       :filter="filter"
-      auto-select-first
       hide-details
       hide-no-data
       solo-inverted
@@ -15,7 +14,7 @@
       dense
       flat
       label="Satellite..."
-      @input="$refs.satellites.blur()"
+      @input="!query && $refs.satellites.blur()"
     >
       <template #item="{ item }">
         {{ item.text }}&nbsp;<small class="grey--text">{{ getCatalogNumber(item.value) }}</small>

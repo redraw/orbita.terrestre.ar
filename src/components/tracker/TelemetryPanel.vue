@@ -98,7 +98,8 @@ export default {
       immediate: true,
       handler(value) {
         if (value > 0 && this.currentPass.length == 0) {
-          this.calculatePass()
+          this.calculatePass(+30 * 1000) // calculate pass with 30s step forward
+          this.calculatePass(-30 * 1000) // calculate pass with 30s step backwards
         } else if (this.currentPass.length > 0) {
           this.resetPass()
         }
@@ -107,7 +108,9 @@ export default {
   },
 
   methods: {
-    calculatePass() {
+    calculatePass(stepMs) {
+      let steps = 0
+      let maxSteps = 1000
       let telemetry, alt
       let ts = this.timestamp
       do {
@@ -123,9 +126,9 @@ export default {
           az: telemetry.azimuth,
           ts
         })
-        ts = ts + 30 * 1000 // forward 30s
-      } while (alt > 0);
-      console.log("calculated pass!", this.currentPass)
+        ts = ts + stepMs
+        steps += 1
+      } while (alt > 0 && steps < maxSteps);
     },
 
     resetPass() {
