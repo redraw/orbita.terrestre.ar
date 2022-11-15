@@ -76,7 +76,7 @@
       <v-tooltip right>
         <template #activator="{ on, attrs }">
           <v-btn
-            class="d-none d-sm-flex my-1"
+            class="my-1"
             fab
             x-small
             v-bind="attrs"
@@ -90,11 +90,11 @@
         </template>
         <span>{{ $t('menu.locate_me') }}</span>
       </v-tooltip>
-      <!-- observer location -->
+      <!-- info -->
       <v-tooltip right>
         <template #activator="{ on, attrs }">
           <v-btn
-            class="d-none d-sm-flex my-1"
+            class="my-1"
             x-small
             fab
             v-bind="attrs"
