@@ -150,15 +150,10 @@ export default {
 
   created () {
     this.infoDialog = !window.localStorage.getItem("infoDialog")
-    this.$i18n.locale = window.localStorage.getItem("locale")
+    this.$i18n.locale = navigator.language.split("-")[0]
   },
 
   watch: {
-    locale(value) {
-      console.log(`changing locale: ${value}`)  // eslint-disable-line
-      this.$i18n.locale = value
-    },
-    
     tle(value) {
       const norad = getCatalogNumber(value)
       if (norad != this.$route.params?.norad) {

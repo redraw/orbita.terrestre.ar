@@ -13,12 +13,10 @@ async function getTLEs(query) {
   if (process.env.NODE_ENV === "production" || process.env.VUE_APP_USE_CELESTRAK === "true") {
     response = await http.get("/api/celestrak", { params });
   } else {
-    response = { data: TLE_SAMPLE, headers: { "x-vercel-ip-country": "es" }}
+    response = { data: TLE_SAMPLE }
   }
 
   const data = response.data.split("\n");
-  const locale = response.headers["x-vercel-ip-country"]
-
   let tles = [];
 
   for (let i = 0; i < data.length; i += 3) {
@@ -28,10 +26,7 @@ async function getTLEs(query) {
     }
   }
 
-  return {
-    tles,
-    locale,
-  };
+  return tles;
 }
 
 async function getLocationFromCoords(coords) {
