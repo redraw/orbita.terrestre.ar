@@ -5,7 +5,7 @@
       position="topright"
     >
       <skychart
-        v-show="showSkychart"
+        v-show="isSatelliteAbove"
         :sat-name="getSatelliteName(tle)"
         :telemetry="telemetry"
         :current-pass="currentPass"
@@ -87,19 +87,20 @@ export default {
   },
 
   computed: {
-    showSkychart () {
+    isSatelliteAbove () {
       return this.observer.enabled && this.telemetry.elevation > 0
     },
     ...mapState(["tle", "timestamp", "observer",]),
   },
 
   watch: {
-    showSkychart: {
+    isSatelliteAbove: {
       immediate: true,
       handler(value) {
         if (value > 0 && this.currentPass.length == 0) {
           this.calculatePass(+30 * 1000) // calculate pass with 30s step forward
           this.calculatePass(-30 * 1000) // calculate pass with 30s step backwards
+          this.$store.dispatch("currentPass", this.currentPass)
         } else if (this.currentPass.length > 0) {
           this.resetPass()
         }

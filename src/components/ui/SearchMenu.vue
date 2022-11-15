@@ -29,23 +29,6 @@
             x-small
             v-bind="attrs"
             v-on="on"
-            @click="setTerminator(!config.terminator)"
-          >
-            <v-icon :color="config.terminator ? 'primary': ''">
-              mdi-weather-sunny
-            </v-icon>
-          </v-btn>
-        </template>
-        <span>{{ $t('menu.solar_terminator') }}</span>
-      </v-tooltip>
-      <v-tooltip right>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            class="my-1"
-            fab
-            x-small
-            v-bind="attrs"
-            v-on="on"
             @click="setFollow(!config.follow)"
           >
             <v-icon :color="config.follow ? 'primary': ''">
@@ -54,23 +37,6 @@
           </v-btn>
         </template>
         <span>{{ $t('menu.follow_satellite') }}</span>
-      </v-tooltip>
-      <v-tooltip right>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            class="d-none d-sm-flex my-1"
-            fab
-            x-small
-            v-bind="attrs"
-            v-on="on"
-            @click="setTelemetry(!config.telemetry)"
-          >
-            <v-icon :color="config.telemetry ? 'primary': ''">
-              mdi-satellite-uplink
-            </v-icon>
-          </v-btn>
-        </template>
-        <span>{{ $t('menu.telemetry') }}</span>
       </v-tooltip>
       <!-- observer location -->
       <v-tooltip right>
@@ -89,6 +55,27 @@
           </v-btn>
         </template>
         <span>{{ $t('menu.locate_me') }}</span>
+      </v-tooltip>
+      <!-- notifications -->
+      <v-tooltip 
+        v-show="observer.enabled"
+        right
+      >
+        <template #activator="{ on, attrs }">
+          <v-btn
+            class="my-1"
+            fab
+            x-small
+            v-bind="attrs"
+            v-on="on"
+            @click="toggleNotifications"
+          >
+            <v-icon :color="config.notifications ? 'primary': ''">
+              mdi-bell
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('menu.notifications') }}</span>
       </v-tooltip>
       <!-- info -->
       <v-tooltip right>
@@ -145,6 +132,7 @@ export default {
     ...mapState([
       "loading", 
       "config", 
+      "observer",
       "tles"
     ]),
   },
@@ -168,6 +156,10 @@ export default {
     if (geoPerm.state === "granted") {
       this.geolocate()
     }
+    const notificationsPerm = await navigator.permissions.query({name: "notifications"})
+    if (notificationsPerm.state === "granted") {
+      this.$store.commit("setNotifications", window.localStorage.getItem("notifications"))
+    }
   },
 
   methods: {
@@ -176,6 +168,17 @@ export default {
         await this.onGeolocation(value)
         this.isLocated = true
       }, console.error)
+    },
+
+    toggleNotifications() {
+      if (!this.config.notifications) {
+        Notification.requestPermission().then(state => {
+          console.log(state)
+          this.$store.commit("setNotifications", state === "granted")
+        })
+      } else {
+        this.$store.commit("setNotifications", false)
+      }
     },
 
     filter (item, queryText, itemText) {

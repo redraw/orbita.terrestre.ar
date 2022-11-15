@@ -199,13 +199,6 @@ export default {
           },
         })
       }
-
-      // Set router timestamp
-      const ts = this.$route.params?.ts
-      if (ts) {
-        const start = new Date(parseInt(ts))
-        await this.$store.dispatch("timeTravel", start)
-      }
     },
   }
 };

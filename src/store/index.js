@@ -33,6 +33,7 @@ const store = {
       tles: {
         group: "stations",
       },
+      notifications: false,
     },
   },
 
@@ -102,6 +103,12 @@ const store = {
     setObserverLocation(state, location) {
       state.observer.location = location
     },
+
+    setNotifications(state, value) {
+      state.config.notifications = value
+      window.localStorage.setItem("notifications", value)
+    },
+
   },
 
   actions: {
@@ -135,6 +142,14 @@ const store = {
       commit("setTimestamp", start.getTime())
       commit("setFollow", true)
       events.emit("timeTravel", start)
+    },
+
+    currentPass({ state }, pass) {
+      // sort by timestamp
+      pass.sort((a, b) => a.ts - b.ts)
+      if (state.config.notifications) {
+        new Notification(`${state.tle[0].trim()} passing above!`)
+      }
     }
   },
 

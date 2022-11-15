@@ -1,13 +1,15 @@
 export default {
   es: {
     hello: {
-      title: "Bienvenido terrícola!",
+      title: "Hola terrícola!",
       content: `
 Esta web muestra satélites en tiempo real. <br>
 <br>
 Podés usar el buscador para elegir uno, y viajar en el tiempo usando los controles de abajo a la izquierda.<br>
 <br>
+<span class="d-none d-sm-flex">
 Clickeando en el icono de GPS podes ver la telemetría del satelite con respecto a tu posición geográfica.
+</span>
 `,
       close: "Cerrar",
     },
@@ -17,6 +19,7 @@ Clickeando en el icono de GPS podes ver la telemetría del satelite con respecto
       follow_satellite: "Seguír satélite",
       solar_terminator: "Mostrar sombra del sol",
       info: "Info",
+      notifications: "Activar notificationes",
     },
     telemetry: {
       name: "nombre",
@@ -44,7 +47,9 @@ This website display satellites in real-time. <br>
 <br>
 You can use the search bar to choose one, and time travel using the control on the bottom left.<br>
 <br>
+<span class="d-none d-sm-flex">
 You can setup your observer position by clicking the GPS button, and satellite telemetry will be added relative to your position.
+</span>
 `,
       close: "Close",
     },
@@ -54,6 +59,7 @@ You can setup your observer position by clicking the GPS button, and satellite t
       follow_satellite: "Follow satellite",
       solar_terminator: "Solar terminator",
       info: "Info",
+      notifications: "Enable notifications",
     },
     telemetry: {
       name: "name",
