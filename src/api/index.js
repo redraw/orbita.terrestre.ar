@@ -13,6 +13,7 @@ async function getTLEs(query) {
   if (process.env.NODE_ENV === "production" || process.env.VUE_APP_USE_CELESTRAK === "true") {
     response = await http.get("/api/celestrak", { params });
   } else {
+    console.warn("Using mocked TLE data! If you need to make real queries, export VUE_APP_USE_CELESTRAK=true")
     response = { data: TLE_SAMPLE }
   }
 

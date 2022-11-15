@@ -182,6 +182,7 @@ import { mapState } from "vuex"
 
 import { toISOString } from "@/utils/date"
 import { getCatalogNumber, getEpochTimestamp } from "tle.js";
+import events from "@/eventbus"
 
 export default {
   props: {
@@ -267,22 +268,20 @@ export default {
   },
 
   created() {
-    // Shift time if timestamp exists in route params
-    const ts = this.$route.params?.ts
-    if (ts) {
-      const start = new Date(parseInt(ts))
-      this.shiftMs = start.getTime() - this.clock.getTime()
-      this.$store.dispatch("timeTravel", start)
-    }
-
+    events.on("timeTravel", this.onTimeTravel)
     this.tick()
   },
 
   destroyed() {
     clearTimeout(this.ticker)
+    events.off("timeTravel", this.onTimeTravel)
   },
 
   methods: {
+    onTimeTravel(start) {
+      this.shiftMs = start.getTime() - this.clock.getTime()
+    },
+
     updateDateTime() {
       // set date/time based on relative time
       this.date = this.relative.date
@@ -301,7 +300,7 @@ export default {
       const [year, month, day] = this.date.split("-")
       const [hour, minute] = this.time.split(":")
       const start = new Date(year, month-1, day, hour, minute, now.getSeconds())
-      this.shiftMs = start.getTime() - now.getTime()
+      // this.shiftMs = start.getTime() - now.getTime()
       this.$store.dispatch("timeTravel", start)
       this.dialogs.date = this.dialogs.time = false
       this.updateURL()
@@ -339,6 +338,7 @@ export default {
       const now = new Date()
       this.speed = 1
       this.shiftMs = 0
+      this.clock = now
       this.$store.dispatch("timeTravel", now)
       this.tick()
     },

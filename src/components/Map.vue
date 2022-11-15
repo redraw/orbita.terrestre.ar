@@ -171,6 +171,7 @@ export default {
     async onMapReady() {
       const self = this
       const map = this.$refs.map.mapObject
+
       this.$store.dispatch("mapReady", map)
 
       // Event handlers
@@ -188,7 +189,22 @@ export default {
       // Set router params
       const norad = this.$route.params?.norad
       if (norad) {
-        this.$store.dispatch("fetchTLEs", { params: { "CATNR": norad }})
+        console.log("fetch TLE from routing:", norad)
+        await this.$store.dispatch("fetchTLEs", { params: { "CATNR": norad }})
+      } else {
+        console.log("fetch TLE from group (default)")
+        await this.$store.dispatch("fetchTLEs", {
+          params: {
+            GROUP: this.config.tles.group
+          },
+        })
+      }
+
+      // Set router timestamp
+      const ts = this.$route.params?.ts
+      if (ts) {
+        const start = new Date(parseInt(ts))
+        await this.$store.dispatch("timeTravel", start)
       }
     },
   }

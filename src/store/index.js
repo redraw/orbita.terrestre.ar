@@ -105,25 +105,23 @@ const store = {
   },
 
   actions: {
-    async fetchTLEs({ commit }, { params, query }) {
+    async fetchTLEs({ commit, state }, { params, query }) {
       commit("setLoading", true)
       const tles = await api.getTLEs(params)
-      if (query) {
+      if (tles.length && query) {
         tles.sort((a, b) => wordDistance(a[0], query) - wordDistance(b[0], query))
       }
       commit("updateTLEs", tles)
       commit("setLoading", false)
+      // set default TLE
+      if (tles.length && !state.tle.length) {
+        commit("updateSat", tles[0])
+      }
     },
 
-    async mapReady({ commit, dispatch, state }, map) {
+    async mapReady({ commit }, map) {
       commit("setupMap", map)
       commit("setupTerminator")
-      await dispatch("fetchTLEs", {
-        params: {
-          GROUP: state.config.tles.group
-        }
-      })
-      commit("updateSat", state.tles[0])
     },
 
     async onGeolocation({ commit }, position) {
