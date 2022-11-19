@@ -46,7 +46,30 @@ async function getLocationFromCoords(coords) {
   }
 }
 
+async function getLocationFromIp() {
+  let response
+  if (process.env.NODE_ENV === "production") {
+    response = await http.get("/api/geoip");
+  } else {
+    response = {
+      headers: {
+        "x-vercel-ip-city": "Neuquén", 
+        "x-vercel-ip-country": "Argentina", 
+        "x-vercel-ip-latitude": "-38.9412137", 
+        "x-vercel-ip-longitude": "-68.1854411",
+      }
+    }
+  }
+  return {
+    city: response.headers["x-vercel-ip-city"],
+    country: response.headers["x-vercel-ip-country"],
+    latitude: parseFloat(response.headers["x-vercel-ip-latitude"]),
+    longitude: parseFloat(response.headers["x-vercel-ip-longitude"]),
+  }
+}
+
 export default {
   getTLEs,
   getLocationFromCoords,
+  getLocationFromIp,
 }

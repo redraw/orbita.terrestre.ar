@@ -79,6 +79,7 @@
       >
         <l-icon>
           <div>📍 {{ observer.location.city }}, {{ observer.location.country }}</div>
+          <small v-if="observer.fromIp">(IP)</small>
         </l-icon>
       </l-marker>
     </l-map>

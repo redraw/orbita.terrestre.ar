@@ -20,10 +20,14 @@ const store = {
     speed: 1,
     observer: {
       enabled: false,
+      fromIp: false,
       lat: 0,
       lng: 0,
       elevation: 0,
-      location: null
+      location: {
+        city: "",
+        country: ""
+      }
     },
     config: {
       terminator: true,
@@ -94,8 +98,9 @@ const store = {
       state.speed = value
     },
 
-    setObserverCoords(state, { coords }) {
+    setObserverCoords(state, { coords, fromIp = false}) {
       state.observer.enabled = true
+      state.observer.fromIp = fromIp
       state.observer.lat = coords.latitude
       state.observer.lng = coords.longitude
     },
@@ -129,6 +134,25 @@ const store = {
     async mapReady({ commit }, map) {
       commit("setupMap", map)
       commit("setupTerminator")
+      try {
+        const {
+          city,
+          country,
+          latitude,
+          longitude,
+        } = await api.getLocationFromIp()
+        if (latitude && longitude) {
+          commit("setObserverCoords", { 
+            coords: { latitude, longitude }, 
+            fromIp: true
+          })
+        }
+        if (city && country) {
+          commit("setObserverLocation", { city, country })
+        }
+      } catch (e) {
+        console.error(e)
+      }
     },
 
     async onGeolocation({ commit }, position) {

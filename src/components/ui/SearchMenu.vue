@@ -49,7 +49,7 @@
             v-on="on"
             @click="geolocate"
           >
-            <v-icon :color="isLocated ? 'primary': ''">
+            <v-icon :color="observer.enabled && !observer.fromIp ? 'primary' : ''">
               mdi-crosshairs-gps
             </v-icon>
           </v-btn>
@@ -58,7 +58,6 @@
       </v-tooltip>
       <!-- notifications -->
       <v-tooltip 
-        v-show="observer.enabled"
         right
       >
         <template #activator="{ on, attrs }">
@@ -68,6 +67,7 @@
             x-small
             v-bind="attrs"
             v-on="on"
+            :disabled="!observer.enabled"
             @click="toggleNotifications"
           >
             <v-icon :color="config.notifications ? 'primary': ''">
@@ -109,7 +109,6 @@ export default {
   data() {
     return {
       query: "",
-      isLocated: false
     };
   },
 
@@ -166,7 +165,6 @@ export default {
     geolocate() {
       navigator.geolocation.getCurrentPosition(async (value) => {
         await this.onGeolocation(value)
-        this.isLocated = true
       }, console.error)
     },
 
