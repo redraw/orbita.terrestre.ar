@@ -61,8 +61,8 @@ async function getLocationFromIp() {
     }
   }
   return {
-    city: response.headers["x-vercel-ip-city"],
-    country: response.headers["x-vercel-ip-country"],
+    city: decodeURI(response.headers["x-vercel-ip-city"]),
+    country: decodeURI(response.headers["x-vercel-ip-country"]),
     latitude: parseFloat(response.headers["x-vercel-ip-latitude"]),
     longitude: parseFloat(response.headers["x-vercel-ip-longitude"]),
   }

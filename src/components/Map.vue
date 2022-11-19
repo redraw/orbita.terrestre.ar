@@ -78,8 +78,8 @@
         :lat-lng="[observer.lat, observer.lng]"
       >
         <l-icon>
-          <div>📍 {{ observer.location.city }}, {{ observer.location.country }}</div>
-          <small v-if="observer.fromIp">(IP)</small>
+          <div>📍 {{ observer.location.city }}, {{ observer.location.country }}
+            <small v-if="observer.fromIp">(IP)</small></div>
         </l-icon>
       </l-marker>
     </l-map>
