@@ -1,7 +1,7 @@
 export default {
   es: {
     hello: {
-      title: "Hola terrícola!",
+      title: "🛰️",
       content: `
 Esta web muestra satélites en tiempo real. <br>
 <br>
@@ -41,7 +41,7 @@ Clickeando en el icono de GPS podes ver la telemetría del satelite con respecto
   },
   en: {
     hello: {
-      title: "Welcome human!",
+      title: "🛰️",
       content: `
 This website display satellites in real-time. <br>
 <br>
