@@ -196,7 +196,7 @@ export default {
         console.log("fetch TLE from group (default)")
         await this.$store.dispatch("fetchTLEs", {
           params: {
-            GROUP: this.config.tles.group
+            CATNR: "43641"
           },
         })
       }
