@@ -53,18 +53,18 @@ async function getLocationFromIp() {
   } else {
     response = {
       headers: {
-        "x-vercel-ip-city": "Neuquén", 
-        "x-vercel-ip-country": "Argentina", 
-        "x-vercel-ip-latitude": "-38.9412137", 
-        "x-vercel-ip-longitude": "-68.1854411",
+        "cf-ipcity": "Neuquén", 
+        "cf-ipcountry": "Argentina", 
+        "cf-iplatitude": "-38.9412137", 
+        "cf-iplongitude": "-68.1854411",
       }
     }
   }
   return {
-    city: decodeURI(response.headers["x-vercel-ip-city"]),
-    country: decodeURI(response.headers["x-vercel-ip-country"]),
-    latitude: parseFloat(response.headers["x-vercel-ip-latitude"]),
-    longitude: parseFloat(response.headers["x-vercel-ip-longitude"]),
+    city: decodeURI(response.headers["cf-ipcity"]),
+    country: decodeURI(response.headers["cf-ipcountry"]),
+    latitude: parseFloat(response.headers["cf-iplatitude"]),
+    longitude: parseFloat(response.headers["cf-iplongitude"]),
   }
 }
 
